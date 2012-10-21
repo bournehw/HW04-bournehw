@@ -3,7 +3,8 @@
 void bournehwStarbucksApp::setup()
 {
 	bournehwStarbucks list = bournehwStarbucks("Starbucks_2006.csv");
-	foundLoc = "1";
+	Entry* node = list.getNearest(0.50,0.40);
+	foundLoc = node->identifier;
 }
 
 void bournehwStarbucksApp::mouseDown( MouseEvent event )

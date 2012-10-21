@@ -11,11 +11,8 @@
 #include <iostream>
 #include <boost/lexical_cast.hpp>
 
-
 using namespace std;
 using namespace boost;
-
-
 
 class bournehwStarbucks : public Starbucks {
 public:
@@ -30,4 +27,5 @@ public:
 
 	void readStarbucks(string fileName);
 
+	string printLocation(double x, double y);
 };

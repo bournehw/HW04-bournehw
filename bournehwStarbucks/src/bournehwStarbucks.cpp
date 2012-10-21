@@ -8,7 +8,21 @@ void bournehwStarbucks::build(Entry* c, int n){
 }
 	
 Entry* bournehwStarbucks::getNearest(double x, double y){
-	return NULL;
+	double difX, difY, newDistance;
+	double oldDistance = numeric_limits<double>::max( );
+	Entry* closest;
+
+	for(int ii = 0; ii<starbucksLen_; ++ii){
+		difX = starbucks_[ii].x-x;
+		difY = starbucks_[ii].y-y;
+		newDistance = sqrt(difX*difX + difY*difY);
+
+		if(newDistance<oldDistance){
+			closest = starbucks_+ii;
+			oldDistance = newDistance;
+		}
+	}
+	return closest;
 }
 
 void bournehwStarbucks::readStarbucks(string fileName){
@@ -53,5 +67,9 @@ void bournehwStarbucks::readStarbucks(string fileName){
 		starbucks_[ii].y = lexical_cast<double>(str);
 		strStream.clear();
 	}
+}
 
+string bournehwStarbucks::printLocation(double x, double y){
+	Entry* location = getNearest(x, y);
+	return location->identifier;
 }
