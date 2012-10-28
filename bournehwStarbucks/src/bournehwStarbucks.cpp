@@ -1,75 +1,145 @@
 #include "bournehwStarbucks.h"
 
-bournehwStarbucks::bournehwStarbucks(string fileName){
-	readStarbucks(fileName);
+
+Node::Node(Entry data){
+	data_ = data;
+	left_ = NULL;
+	right_ = NULL;
+	parent_ = NULL;
+}
+
+bournehwStarbucks::bournehwStarbucks(){
+	head_ = NULL;
 }
 
 void bournehwStarbucks::build(Entry* c, int n){
+	head_ = new Node(c[0]);
+	for(int ii=1; ii<n; ++ii){
+		insert(&c[ii], head_, true);
+	}
 }
-	
-Entry* bournehwStarbucks::getNearest(double x, double y){
-	double difX, difY, newDistance;
-	double oldDistance = numeric_limits<double>::max( );
-	Entry* closest;
 
-	for(int ii = 0; ii<starbucksLen_; ++ii){
-		difX = starbucks_[ii].x-x;
-		difY = starbucks_[ii].y-y;
-		newDistance = sqrt(difX*difX + difY*difY);
-
-		if(newDistance<oldDistance){
-			closest = starbucks_+ii;
-			oldDistance = newDistance;
+Node* bournehwStarbucks::insert(Entry* data, Node* r, bool xLevel){
+	if(r==NULL) return new Node(*data);
+	if(xLevel){
+		if(data->x<r->data_.x){
+			r->left_ = insert(data,r->left_,false);
+		}else{
+			r->right_ = insert(data,r->right_,false);
+		}
+	}else{
+		if(data->y<r->data_.y){
+			r->left_ = insert(data,r->left_,true);
+		}else{
+			r->right_ = insert(data,r->right_,true);
 		}
 	}
-	return closest;
+	return r;
 }
 
-void bournehwStarbucks::readStarbucks(string fileName){
-	ifstream fileIn;
-	istringstream strStream;
-	string str;
-	int numItems=1;
-	double x, y;
-	string name;
+void bournehwStarbucks::printInOrder(Node* r){
+	if(r==NULL) return;
+	printInOrder(r->left_);
+	console() << r->data_.identifier <<endl;
+	printInOrder(r->right_);
+}
 
-	fileIn.open(fileName,ifstream::in);
+
+Entry* bournehwStarbucks::getNearest(double x, double y){
+	Node* node = search(x, y, head_, true);
+	return &(node->data_);
+}
+
+Node* bournehwStarbucks::search(double x, double y, Node* r, bool xLevel){
+	Node* candidate;
+	bool wentLeft;
+	double difX, difY, distance, distance2;
+	if(r==NULL)
+		return NULL;
+
+	difX = r->data_.x-x;
+	difY = r->data_.y-y;
+	distance = sqrt(difX*difX+difY*difY);
+
+	if(distance<=0.00001)
+		return r;
+
+	if(xLevel){
+		if(x<r->data_.x){
+			candidate = search(x, y, r->left_, !xLevel);
+			wentLeft = true;
+		}else{
+			candidate = search(x, y, r->right_, !xLevel);
+			wentLeft = false;
+		}
+	}else{
+		if(y<r->data_.y){
+			candidate = search(x, y, r->left_, !xLevel);
+			wentLeft = true;
+		}else{
+			candidate = search(x, y, r->right_, !xLevel);
+			wentLeft = false;
+		}
+	}
+
+	if(candidate==NULL){
+		candidate = checkOther(x, y, r, !xLevel, !wentLeft);
+	}else{
+		difX = candidate->data_.x-x;
+		difY = candidate->data_.y-y;
+		distance = sqrt(difX*difX+difY*difY);
+
+		if(xLevel&&abs(r->data_.x-x)<distance){
+			candidate = checkOther(x, y, candidate, !xLevel, !wentLeft);
+		}
+		if(!xLevel&&abs(r->data_.y-y)<distance){
+			candidate = checkOther(x, y, candidate, !xLevel, !wentLeft);
+		}
+	}
 	
-	if(!fileIn.is_open())
-		starbucks_ =  NULL;
+	difX = candidate->data_.x-x;
+	difY = candidate->data_.y-y;
+	distance = sqrt(difX*difX+difY*difY);
 
-	while(!fileIn.eof()){
-		string str;
-		getline(fileIn,str,'\r');
-		if(!fileIn.eof())
-			numItems++;
+	difX = r->data_.x-x;
+	difY = r->data_.y-y;
+	distance2 = sqrt(difX*difX+difY*difY);
+
+	if(distance<distance2){
+		return candidate;
+	}else{
+		return r;
 	}
-
-	starbucks_ = new Entry[numItems];
-	starbucksLen_ = numItems;
-
-	fileIn.clear();
-	fileIn.seekg(0, ifstream::beg);
-
-	for(int ii=0; ii<numItems; ++ii){
-		//starbucks_[ii] = new Entry;
-		getline(fileIn,str,'\r');
-		strStream.str(str);
-
-		getline(strStream,str,',');
-		name = str;
-		starbucks_[ii].identifier = str;
-
-		getline(strStream,str,',');
-		starbucks_[ii].x = lexical_cast<double>(str);
-
-		getline(strStream,str,',');
-		starbucks_[ii].y = lexical_cast<double>(str);
-		strStream.clear();
-	}
+	
+	/*double difX = data->x-r->data_.x;
+	double difY = data->y-r->data_.y;
+	if(sqrt(difX*difX + difY*difY)<0.00001f) return r;*/
 }
 
-string bournehwStarbucks::printLocation(double x, double y){
-	Entry* location = getNearest(x, y);
-	return location->identifier;
+Node* bournehwStarbucks::checkOther(double x, double y, Node* r, bool xLevel, bool goLeft){
+	double difX, difY, dist1, dist2;
+	Node* candidate;
+
+	if(goLeft){
+		candidate = search(x, y, r->left_, xLevel);
+	}else{
+		candidate = search(x, y, r->right_, xLevel);
+	}
+
+	if(candidate==NULL)
+		return r;
+
+	difX = candidate->data_.x-x;
+	difY = candidate->data_.y-y;
+	dist1 = sqrt(difX*difX + difY*difY);
+
+	difX = r->data_.x-x; 
+	difY = r->data_.y-y;
+	dist2 = sqrt(difX*difX + difY*difY);
+
+	if(dist1<dist2){
+		return candidate;
+	}else{
+		return r;
+	}
 }

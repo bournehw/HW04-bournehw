@@ -10,22 +10,36 @@
 #include <sstream>
 #include <iostream>
 #include <boost/lexical_cast.hpp>
+#include "cinder/app/AppBasic.h"
+#include "cinder/gl/gl.h"
 
+using namespace ci;
+using namespace ci::app;
 using namespace std;
 using namespace boost;
 
+class Node{
+public:
+	Node* left_;
+	Node* right_; 
+	Node* parent_;
+	Entry data_;
+
+	Node(Entry data);
+};
+
 class bournehwStarbucks : public Starbucks {
 public:
-	Entry* starbucks_;
-	int starbucksLen_;
+	Node* head_;
 
-	bournehwStarbucks(string fileName);
-
+	bournehwStarbucks();
 	virtual void build(Entry* c, int n);
-	
 	virtual Entry* getNearest(double x, double y);
+	Node* insert(Entry* data, Node* r, bool xLevel);
+	void printInOrder(Node* r);
 
-	void readStarbucks(string fileName);
+private:
+	Node* search(double x, double y, Node* r, bool xLevel);
+	Node* checkOther(double x, double y, Node* r, bool xLevel, bool goLeft);
 
-	string printLocation(double x, double y);
 };
