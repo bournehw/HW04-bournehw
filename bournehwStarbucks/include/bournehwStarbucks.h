@@ -22,10 +22,10 @@ class Node{
 public:
 	Node* left_;
 	Node* right_; 
-	Node* parent_;
 	Entry data_;
 
 	Node(Entry data);
+	~Node();
 };
 
 class bournehwStarbucks : public Starbucks {
@@ -33,13 +33,15 @@ public:
 	Node* head_;
 
 	bournehwStarbucks();
+	~bournehwStarbucks();
+
 	virtual void build(Entry* c, int n);
 	virtual Entry* getNearest(double x, double y);
-	Node* insert(Entry* data, Node* r, bool xLevel);
 	void printInOrder(Node* r);
 
 private:
 	Node* search(double x, double y, Node* r, bool xLevel);
 	Node* checkOther(double x, double y, Node* r, bool xLevel, bool goLeft);
-
+	Node* insert(Entry* data, Node* r, bool xLevel);
+	void shuffle(Entry* arr, int n);
 };

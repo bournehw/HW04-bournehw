@@ -1,7 +1,10 @@
 #pragma once
+#define BOOST_CHRONO_HEADER_ONLY
+
 #include "cinder/app/AppBasic.h"
 #include "cinder/gl/gl.h"
 #include "boost/date_time/posix_time/posix_time.hpp"
+#include "boost/chrono.hpp"
 #include <string>
 #include "bournehwStarbucks.h"
 
@@ -21,7 +24,6 @@ class bournehwStarbucksApp : public AppBasic {
 	void draw();
 	void readStarbucks(string fileName);
 	Entry* searchArray(double x, double y);
-	void shuffle(Entry* arr, int n);
 	void printArr(Entry* arr, int n);
 	string foundLoc;
 };

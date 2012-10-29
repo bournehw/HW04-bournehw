@@ -1,44 +1,41 @@
 #include "bournehwStarbucksApp.h"
 
 void bournehwStarbucksApp::setup()
-{
+{	double x, y;
+	int numCorrect = 0, n = 1000, nPoints = 100;
+	Entry *nodeSlow, *nodeFast;
+	boost::chrono::system_clock::time_point t;
+	boost::chrono::duration<double> sumSlowT, sumFastT, slowT, fastT;
+
 	bournehwStarbucks list = bournehwStarbucks();
 	readStarbucks("Starbucks_2006.csv");
-	shuffle(starbucks_, starbucksLen_);
 	list.build(starbucks_,starbucksLen_);
-	//list.printInOrder(list.head_);
-	//printArr(starbucks_, starbucksLen_);
 
-	double x, y;
-	int numCorrect = 0, n = 1000;
-	Entry *nodeSlow, *nodeFast;
-	boost::posix_time::ptime t;
-	boost::posix_time::time_duration sumSlowT, sumFastT;
 	srand (time(NULL));
-	for(int ii=0; ii<n; ++ii){
-		 x = (double)rand()/(float)RAND_MAX;
-		 y = (double)rand()/(float)RAND_MAX;
+	for(int jj=0; jj<n; ++jj){
+		x = (double)rand()/(float)RAND_MAX;
+		y = (double)rand()/(float)RAND_MAX;
 
-		 t = boost::posix_time::microsec_clock::local_time();
-		 nodeSlow = searchArray(x,y);
-		 sumSlowT += boost::posix_time::microsec_clock::local_time()-t;
-		
-		 t = boost::posix_time::microsec_clock::local_time();
-		 nodeFast = list.getNearest(x,y);
-		 sumFastT += boost::posix_time::microsec_clock::local_time()-t;
+		t = boost::chrono::system_clock::now();
+		for(int ii=0; ii<n; ++ii){
+			nodeSlow = searchArray(x,y);
+		}
+		slowT = boost::chrono::system_clock::now()-t;
+		console() << "Slow time:" << slowT << flush;
 
-		 if(nodeSlow->identifier==nodeFast->identifier)
-			 numCorrect++;
+		t = boost::chrono::system_clock::now();
+		for(int ii=0; ii<n; ++ii){
+			nodeFast = list.getNearest(x,y);
+		}
+		fastT = boost::chrono::system_clock::now()-t;
+		console() << " Fast time:" << fastT << endl;
+		if(nodeSlow->identifier==nodeFast->identifier)
+			numCorrect++;
 	}
 
-	console() << "Slow Time:" << sumSlowT/n <<" Fast Time:" << sumFastT/n << " Percent Accurate:" << (numCorrect/n)*100 << endl;
+	console() << "Slow Time:" << slowT/n <<" Fast Time:" << fastT/n << " Percent Accurate:" << (numCorrect/n)*100 << endl;
 
-	//boost::posix_time::ptime t = boost::posix_time::microsec_clock::local_time();
-	//Entry* node = searchArray(0.50,0.40);
-	//boost::p(osix_time::time_duration slowT = boost::posix_time::microsec_clock::local_time()-t;
-	//console) << slowT << "\t" << node->identifier << "\tx=" << node->x << "\ty=" << node->y << endl;
-	//foundLoc = node->identifier;
-	foundLoc = "Fuck";
+	foundLoc = "";
 }
 
 void bournehwStarbucksApp::readStarbucks(string fileName){
@@ -105,19 +102,6 @@ void bournehwStarbucksApp::printArr(Entry* arr, int n){
 	console() << "\n\nStart Array Output" << endl;
 	for(int ii=0; ii<n; ++ii){
 		console() << arr[ii].identifier << endl;
-	}
-}
-
-void bournehwStarbucksApp::shuffle(Entry* arr, int n){
-	srand (time(NULL));
-	int jj;
-	if(n>1){
-		for(int ii=0; ii<n; ++ii){
-			jj = rand()%n;
-			Entry temp = arr[jj];
-			arr[jj] = arr[ii];
-			arr[ii] = temp;
-		}
 	}
 }
 
