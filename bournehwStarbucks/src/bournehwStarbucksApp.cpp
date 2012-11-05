@@ -1,17 +1,24 @@
 #include "bournehwStarbucksApp.h"
 
+void bournehwStarbucksApp::prepareSettings(Settings* settings){
+	(*settings).setWindowSize(APP_WIDTH,APP_HEIGHT);
+	(*settings).setResizable(false);
+}
+
 void bournehwStarbucksApp::setup()
-{	double x, y;
+{	/*double x, y;
 	int numCorrect = 0, n = 1000, nPoints = 100;
 	Entry *nodeSlow, *nodeFast;
 	boost::chrono::system_clock::time_point t;
-	boost::chrono::duration<double> sumSlowT, sumFastT, slowT, fastT;
+	boost::chrono::duration<double> sumSlowT, sumFastT, slowT, fastT;*/
+	surface_ = new Surface(TEXTURE_SIZE,TEXTURE_SIZE,false);
+	mapImage_ = new Surface(loadImage(loadResource(RES_MAP)));
 
-	bournehwStarbucks list = bournehwStarbucks();
+	list = new bournehwStarbucks();
 	readStarbucks("Starbucks_2006.csv");
-	list.build(starbucks_,starbucksLen_);
+	list->build(starbucks_,starbucksLen_);
 
-	srand (time(NULL));
+	/*srand (time(NULL));
 	for(int jj=0; jj<n; ++jj){
 		x = (double)rand()/(float)RAND_MAX;
 		y = (double)rand()/(float)RAND_MAX;
@@ -35,7 +42,7 @@ void bournehwStarbucksApp::setup()
 
 	console() << "Slow Time:" << slowT/n <<" Fast Time:" << fastT/n << " Percent Accurate:" << (numCorrect/n)*100 << endl;
 
-	foundLoc = "";
+	foundLoc = "";*/
 }
 
 void bournehwStarbucksApp::readStarbucks(string fileName){
@@ -111,17 +118,23 @@ void bournehwStarbucksApp::mouseDown( MouseEvent event )
 
 void bournehwStarbucksApp::update()
 {
+	uint8_t* dataArray = (*surface_).getData();
 }
 
 void bournehwStarbucksApp::draw()
 {
-	Vec2f pos = Vec2f(10.0f,10.0f);
-	Colorf  color = Color::white();
-    Font font = Font( "ArialMT", 50 );
 
-	gl::clear( Color( 0, 0, 0 ) ); 
-	gl::drawString(foundLoc,pos,color,font);
-	
+	gl::color(Color(255,255,255));
+	gl::draw(*mapImage_);
+	gl::color(Color(0,0,255));
+	/*gl::drawSolidCircle(Vec2f(((float)APP_WIDTH-100)*0.481406177419355f+70,((float)APP_HEIGHT-100)*(1-0.99996564f)+50),2,0); //49.003646,-95.152817
+	gl::drawSolidCircle(Vec2f(((float)APP_WIDTH-100)*0.270845967741936f+70,((float)APP_HEIGHT-100)*(1-0.29339484f)+50),2,0); //31.334871,-108.20755
+	gl::drawSolidCircle(Vec2f(((float)APP_WIDTH-100)*0.012715241935484f+70,((float)APP_HEIGHT-100)*(1-0.71984972f)+50),2,0); //41.996243,-124.211655
+	gl::drawSolidCircle(Vec2f(((float)APP_WIDTH-100)*0.449233516129032f+70,((float)APP_HEIGHT-100)*(1-0.0781242399999999f)+50),2,0); //25.953106,-97.147522
+	gl::drawSolidCircle(Vec2f(((float)APP_WIDTH-100)*0.706932306451613f+70,((float)APP_HEIGHT-100)*(1-0.0488934f)+50),2,0); //25.222335,-81.170197
+	gl::drawSolidCircle(Vec2f(((float)APP_WIDTH-100)*0.899569596774193f+70,((float)APP_HEIGHT-100)*(1-0.93831236f)+50),2,0); //47.457809,-69.226685
+	gl::drawSolidCircle(Vec2f(((float)APP_WIDTH-100)*0.937312951612903f+707,((float)APP_HEIGHT-100)*(1-0.83174124f)+50),2,0); //44.793531,-66.886597*/
+	list->draw(list->head_,APP_WIDTH,APP_HEIGHT,Color8u(255,0,0));
 }
 
 CINDER_APP_BASIC( bournehwStarbucksApp, RendererGl )

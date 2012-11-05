@@ -38,6 +38,7 @@ public:
 	virtual void build(Entry* c, int n);
 	virtual Entry* getNearest(double x, double y);
 	void printInOrder(Node* r);
+	void draw(Node* r, int mapW, int mapH, Color8u c);
 
 private:
 	Node* search(double x, double y, Node* r, bool xLevel);

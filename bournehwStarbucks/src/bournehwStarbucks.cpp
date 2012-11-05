@@ -176,3 +176,13 @@ void bournehwStarbucks::shuffle(Entry* arr, int n){
 		}
 	}
 }
+
+void bournehwStarbucks::draw(Node* r, int mapW, int mapH, Color8u c){
+	if(r==NULL) return;
+	draw(r->left_,mapW, mapH, c);
+	float x = ((float)mapW-100)*((float)r->data_.x)+70;
+	float y = ((float)mapH-100)*(1.0f-(float)r->data_.y)+50;
+	gl::color(c);
+	gl::drawSolidCircle(Vec2f(x,y),1,0);
+	draw(r->right_, mapW, mapH, c);
+}
