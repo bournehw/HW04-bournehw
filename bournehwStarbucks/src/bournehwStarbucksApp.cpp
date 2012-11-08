@@ -6,43 +6,44 @@ void bournehwStarbucksApp::prepareSettings(Settings* settings){
 }
 
 void bournehwStarbucksApp::setup()
-{	/*double x, y;
-	int numCorrect = 0, n = 1000, nPoints = 100;
-	Entry *nodeSlow, *nodeFast;
-	boost::chrono::system_clock::time_point t;
-	boost::chrono::duration<double> sumSlowT, sumFastT, slowT, fastT;*/
-	surface_ = new Surface(TEXTURE_SIZE,TEXTURE_SIZE,false);
-	mapImage_ = new Surface(loadImage(loadResource(RES_MAP)));
-
+{
 	list = new bournehwStarbucks();
 	readStarbucks("Starbucks_2006.csv");
 	list->build(starbucks_,starbucksLen_);
 
-	/*srand (time(NULL));
-	for(int jj=0; jj<n; ++jj){
-		x = (double)rand()/(float)RAND_MAX;
-		y = (double)rand()/(float)RAND_MAX;
+	srand(time(NULL));
+	list->assignColor(list->head_);
 
-		t = boost::chrono::system_clock::now();
-		for(int ii=0; ii<n; ++ii){
-			nodeSlow = searchArray(x,y);
-		}
-		slowT = boost::chrono::system_clock::now()-t;
-		console() << "Slow time:" << slowT << flush;
+	Surface* blankMap = new Surface(loadImage(loadResource(RES_MAP)));
+	mapImage_ = new gl::Texture(*blankMap);
 
-		t = boost::chrono::system_clock::now();
-		for(int ii=0; ii<n; ++ii){
-			nodeFast = list.getNearest(x,y);
+	Surface* temp = new Surface(*blankMap);
+	genRegions(temp);
+	regionsImage_ = new gl::Texture(*blankMap);
+}
+
+void bournehwStarbucksApp::genRegions(Surface* surface){
+	Vec2i pos;
+	double mapX, mapY;
+	Node* node;
+
+	Area area(X_BORDER, Y_BORDER, APP_WIDTH-(OFFSET-X_BORDER), APP_HEIGHT-(OFFSET-Y_BORDER));
+	Surface::Iter iter = surface->getIter(area);
+
+
+	while( iter.line() ) {
+		while( iter.pixel() ) {
+			pos = iter.getPos();
+			mapX = ((double)(pos.x-70))/((double)(APP_WIDTH-100));
+			mapY = 1.0f - ((double)(pos.y-50))/((double)(APP_HEIGHT-100));
+
+			node = list->search(mapX, mapY, list->head_, true);
+
+			iter.r() = (node->color_.r+iter.r())/2;
+			iter.g() = (node->color_.g+iter.g())/2;
+			iter.b() = (node->color_.b+iter.b())/2;
 		}
-		fastT = boost::chrono::system_clock::now()-t;
-		console() << " Fast time:" << fastT << endl;
-		if(nodeSlow->identifier==nodeFast->identifier)
-			numCorrect++;
 	}
-
-	console() << "Slow Time:" << slowT/n <<" Fast Time:" << fastT/n << " Percent Accurate:" << (numCorrect/n)*100 << endl;
-
-	foundLoc = "";*/
 }
 
 void bournehwStarbucksApp::readStarbucks(string fileName){
@@ -118,14 +119,13 @@ void bournehwStarbucksApp::mouseDown( MouseEvent event )
 
 void bournehwStarbucksApp::update()
 {
-	uint8_t* dataArray = (*surface_).getData();
 }
 
 void bournehwStarbucksApp::draw()
 {
 
 	gl::color(Color(255,255,255));
-	gl::draw(*mapImage_);
+	gl::draw(*regionsImage_);
 	gl::color(Color(0,0,255));
 	/*gl::drawSolidCircle(Vec2f(((float)APP_WIDTH-100)*0.481406177419355f+70,((float)APP_HEIGHT-100)*(1-0.99996564f)+50),2,0); //49.003646,-95.152817
 	gl::drawSolidCircle(Vec2f(((float)APP_WIDTH-100)*0.270845967741936f+70,((float)APP_HEIGHT-100)*(1-0.29339484f)+50),2,0); //31.334871,-108.20755
@@ -134,7 +134,7 @@ void bournehwStarbucksApp::draw()
 	gl::drawSolidCircle(Vec2f(((float)APP_WIDTH-100)*0.706932306451613f+70,((float)APP_HEIGHT-100)*(1-0.0488934f)+50),2,0); //25.222335,-81.170197
 	gl::drawSolidCircle(Vec2f(((float)APP_WIDTH-100)*0.899569596774193f+70,((float)APP_HEIGHT-100)*(1-0.93831236f)+50),2,0); //47.457809,-69.226685
 	gl::drawSolidCircle(Vec2f(((float)APP_WIDTH-100)*0.937312951612903f+707,((float)APP_HEIGHT-100)*(1-0.83174124f)+50),2,0); //44.793531,-66.886597*/
-	list->draw(list->head_,APP_WIDTH,APP_HEIGHT,Color8u(255,0,0));
+	list->draw(list->head_,APP_WIDTH,APP_HEIGHT);
 }
 
 CINDER_APP_BASIC( bournehwStarbucksApp, RendererGl )

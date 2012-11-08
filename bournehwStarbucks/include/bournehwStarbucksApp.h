@@ -24,6 +24,7 @@ class bournehwStarbucksApp : public AppBasic {
 
 	void prepareSettings(Settings* settings);
 	void setup();
+	void genRegions(Surface* surface);
 	void mouseDown( MouseEvent event );	
 	void update();
 	void draw();
@@ -34,10 +35,14 @@ class bournehwStarbucksApp : public AppBasic {
 
 private:
 	Surface* surface_;
-	Surface* mapImage_;
+	gl::Texture* mapImage_;
+	gl::Texture* regionsImage_;
 
 	//Width and height of the screen
 	static const int APP_WIDTH=800;
 	static const int APP_HEIGHT=600;
+	static const int OFFSET = 100;
+	static const int X_BORDER = 70;
+	static const int Y_BORDER = 50;
 	static const int TEXTURE_SIZE=1024;
 };

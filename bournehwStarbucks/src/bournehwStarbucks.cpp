@@ -10,6 +10,7 @@ Node::~Node(void){
 	delete &data_;
 	delete left_;
 	delete right_;
+	delete &color_;
 	left_ = NULL;
 	right_ = NULL;
 }
@@ -177,12 +178,19 @@ void bournehwStarbucks::shuffle(Entry* arr, int n){
 	}
 }
 
-void bournehwStarbucks::draw(Node* r, int mapW, int mapH, Color8u c){
+void bournehwStarbucks::assignColor(Node* r){
 	if(r==NULL) return;
-	draw(r->left_,mapW, mapH, c);
+	assignColor(r->left_);
+	r->color_ = Color8u(rand()%256,rand()%256,rand()%256);
+	assignColor(r->right_);
+}
+
+void bournehwStarbucks::draw(Node* r, int mapW, int mapH){
+	if(r==NULL) return;
+	draw(r->left_,mapW, mapH);
 	float x = ((float)mapW-100)*((float)r->data_.x)+70;
 	float y = ((float)mapH-100)*(1.0f-(float)r->data_.y)+50;
-	gl::color(c);
+	gl::color(r->color_);
 	gl::drawSolidCircle(Vec2f(x,y),1,0);
-	draw(r->right_, mapW, mapH, c);
+	draw(r->right_, mapW, mapH);
 }

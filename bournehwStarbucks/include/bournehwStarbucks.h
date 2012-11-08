@@ -23,6 +23,7 @@ public:
 	Node* left_;
 	Node* right_; 
 	Entry data_;
+	Color8u color_;
 
 	Node(Entry data);
 	~Node();
@@ -38,10 +39,11 @@ public:
 	virtual void build(Entry* c, int n);
 	virtual Entry* getNearest(double x, double y);
 	void printInOrder(Node* r);
-	void draw(Node* r, int mapW, int mapH, Color8u c);
+	void draw(Node* r, int mapW, int mapH);
+	Node* search(double x, double y, Node* r, bool xLevel);
+	void assignColor(Node* r);
 
 private:
-	Node* search(double x, double y, Node* r, bool xLevel);
 	Node* checkOther(double x, double y, Node* r, bool xLevel, bool goLeft);
 	Node* insert(Entry* data, Node* r, bool xLevel);
 	void shuffle(Entry* arr, int n);
