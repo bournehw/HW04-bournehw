@@ -24,8 +24,10 @@ class bournehwStarbucksApp : public AppBasic {
 
 	void prepareSettings(Settings* settings);
 	void setup();
-	void genRegions(Surface* surface);
+	void genRegions(Surface* regionsImage,Surface* popDifImage,Surface* ppsImage);
+	void readCensus(string fileName);
 	void mouseDown( MouseEvent event );	
+	void keyDown( KeyEvent event );
 	void update();
 	void draw();
 	void readStarbucks(string fileName);
@@ -37,6 +39,12 @@ private:
 	Surface* surface_;
 	gl::Texture* mapImage_;
 	gl::Texture* regionsImage_;
+	gl::Texture* ppsImage_;
+	gl::Texture* popDifImage_;
+
+	bool regionFlag_;
+	bool ppsFlag_;
+	bool popDifFlag_;
 
 	//Width and height of the screen
 	static const int APP_WIDTH=800;

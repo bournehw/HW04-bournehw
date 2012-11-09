@@ -4,6 +4,9 @@ Node::Node(Entry data){
 	data_ = data;
 	left_ = NULL;
 	right_ = NULL;
+	pop00 = 0;
+	pop10 = 0;
+
 }
 
 Node::~Node(void){
@@ -11,12 +14,20 @@ Node::~Node(void){
 	delete left_;
 	delete right_;
 	delete &color_;
+	delete &difColor_;
+	delete &ppsColor_;
 	left_ = NULL;
 	right_ = NULL;
 }
 
 bournehwStarbucks::bournehwStarbucks(){
 	head_ = NULL;
+	maxPop00_ = 0;
+	maxPop10_ = 0;
+	minPop00_ = UINT_MAX;
+	minPop10_ = UINT_MAX;
+	maxDif_ = INT_MIN;
+	minDif_ = INT_MAX;
 }
 
 bournehwStarbucks::~bournehwStarbucks(){
@@ -185,11 +196,22 @@ void bournehwStarbucks::assignColor(Node* r){
 	assignColor(r->right_);
 }
 
+/*
 void bournehwStarbucks::draw(Node* r, int mapW, int mapH){
 	if(r==NULL) return;
 	draw(r->left_,mapW, mapH);
 	float x = ((float)mapW-100)*((float)r->data_.x)+70;
 	float y = ((float)mapH-100)*(1.0f-(float)r->data_.y)+50;
+	gl::color(r->color_);
+	gl::drawSolidCircle(Vec2f(x,y),1,0);
+	draw(r->right_, mapW, mapH);
+}*/
+
+void bournehwStarbucks::draw(Node* r, int mapW, int mapH){
+	if(r==NULL) return;
+	draw(r->left_,mapW, mapH);
+	float x = ((float)mapW-100)*((float)r->data_.x);
+	float y = ((float)mapH-100)*(1.0f-(float)r->data_.y);
 	gl::color(r->color_);
 	gl::drawSolidCircle(Vec2f(x,y),1,0);
 	draw(r->right_, mapW, mapH);

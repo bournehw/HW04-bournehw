@@ -9,6 +9,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <climits>
 #include <boost/lexical_cast.hpp>
 #include "cinder/app/AppBasic.h"
 #include "cinder/gl/gl.h"
@@ -24,6 +25,10 @@ public:
 	Node* right_; 
 	Entry data_;
 	Color8u color_;
+	Color8u difColor_;
+	Color8u ppsColor_;
+	unsigned int pop00;
+	unsigned int pop10;
 
 	Node(Entry data);
 	~Node();
@@ -32,6 +37,12 @@ public:
 class bournehwStarbucks : public Starbucks {
 public:
 	Node* head_;
+	unsigned int maxPop00_;
+	unsigned int maxPop10_;
+	unsigned int minPop00_;
+	unsigned int minPop10_;
+	int maxDif_;
+	int minDif_;
 
 	bournehwStarbucks();
 	~bournehwStarbucks();
