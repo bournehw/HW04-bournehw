@@ -240,11 +240,11 @@ void bournehwStarbucksApp::mouseDown( MouseEvent event )
 }
 
 void bournehwStarbucksApp::keyDown( KeyEvent event ) {
-    if(event.getChar() == 'c')
+    if(event.getChar() == 'c'&&!ppsFlag_&&!popDifFlag_)
 		regionFlag_ = !regionFlag_;
-	if(event.getChar() == 'e')
+	if(event.getChar() == 'e'&&!regionFlag_&&!ppsFlag_)
 		popDifFlag_ = !popDifFlag_;
-	if(event.getChar() == 'f')
+	if(event.getChar() == 'f'&&!regionFlag_&&!popDifFlag_)
 		ppsFlag_ = !ppsFlag_;
 }
 
